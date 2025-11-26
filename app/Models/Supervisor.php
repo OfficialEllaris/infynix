@@ -4,6 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property int $id
+ * @property string $fullname
+ * @property string $email_address
+ * @property string|null $phone_number
+ */
 class Supervisor extends Model
 {
     protected $fillable = [
