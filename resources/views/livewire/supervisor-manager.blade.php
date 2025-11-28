@@ -10,7 +10,7 @@
                 </div>
             @endif
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <fieldset class="fieldset">
                     <legend class="fieldset-legend">Supervisor Name</legend>
                     <input type="text" wire:model="fullName" class="input input-lg rounded-2xl w-full"
@@ -31,6 +31,12 @@
                         placeholder="Type here" />
                     @error('phoneNumber')<p class="label text-primary">{{ $message }}</p>@enderror
                 </fieldset>
+
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">Resume</legend>
+                    <input type="file" wire:model="resume" class="file-input file-input-lg rounded-2xl w-full" />
+                    @error('resume')<p class="label text-primary">{{ $message }}</p>@enderror
+                </fieldset>
             </div>
 
             <button class="btn btn-primary">Add Supervisor</button>
@@ -49,6 +55,7 @@
                         <th class="uppercase">Full Name</th>
                         <th class="uppercase">Email Address</th>
                         <th class="uppercase">Phone Number</th>
+                        <th class="uppercase">Resume</th>
                         <th class="uppercase">Account Actions</th>
                     </tr>
                 </thead>
@@ -66,6 +73,15 @@
                                 <td>{{ $supervisor->fullname }}</td>
                                 <td>{{ $supervisor->email_address }}</td>
                                 <td>{{ $supervisor->phone_number ?? '-- / --' }}</td>
+                                <td>
+                                    @if ($supervisor->resume)
+                                        <a href="{{ $supervisor->resume }}" target="_blank" class="text-primary font-bold">
+                                            View Resume
+                                        </a>
+                                    @else
+                                        -- / --
+                                    @endif
+                                </td>
                                 <td class="inline-flex gap-2">
                                     <button wire:click="loadSupervisorData({{ $supervisor->id }})"
                                         class="btn btn-sm btn-soft border-primary border-dashed btn-primary">
@@ -89,7 +105,7 @@
         <div class="modal-box space-y-4 max-w-4xl">
             <h3 class="text-2xl font-bold text-primary">Manage Supervisor Data</h3>
             <form wire:submit.prevent="updateSupervisorData" class="space-y-4">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <fieldset class="fieldset">
                         <legend class="fieldset-legend">Supervisor Name</legend>
                         <input type="text" wire:model="editingFullName" class="input input-lg rounded-2xl w-full"
@@ -109,6 +125,12 @@
                         <input type="text" wire:model="editingPhoneNumber" class="input input-lg rounded-2xl w-full"
                             placeholder="Type here" />
                         @error('editingPhoneNumber')<p class="label text-primary">{{ $message }}</p>@enderror
+                    </fieldset>
+                    <fieldset class="fieldset">
+                        <legend class="fieldset-legend">Resume</legend>
+                        <input type="file" wire:model="editingResume"
+                            class="file-input file-input-lg rounded-2xl w-full" />
+                        @error('editingResume')<p class="label text-primary">{{ $message }}</p>@enderror
                     </fieldset>
                 </div>
 

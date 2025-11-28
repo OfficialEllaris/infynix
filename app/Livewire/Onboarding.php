@@ -2,7 +2,9 @@
 
 namespace App\Livewire;
 
+use App\Mail\OnboardingSuccessful;
 use App\Models\User;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 
 class Onboarding extends Component
@@ -13,7 +15,7 @@ class Onboarding extends Component
 
     protected $rules = [
         'username' => 'required|min:3|max:20',
-        'email_address' => 'required|email',
+        'email_address' => 'unique:users,email_address|required|email|max:255',
         'password' => 'required|min:6',
     ];
 
@@ -29,11 +31,16 @@ class Onboarding extends Component
 
 
         // Create user record
-        User::create([
+        $user = User::create([
             'username' => $this->username,
             'email_address' => $this->email_address,
             'password' => $this->password
         ]);
+
+        // Send email
+        Mail::to($this->email_address)->queue(
+            new OnboardingSuccessful($user)
+        );
 
         // Reset input fields
         $this->reset([

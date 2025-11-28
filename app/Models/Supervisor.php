@@ -16,6 +16,7 @@ class Supervisor extends Model
         'fullname',
         'email_address',
         'phone_number',
+        'resume',
     ];
 
     public function students()

@@ -4,17 +4,21 @@ namespace App\Livewire;
 
 use App\Models\Supervisor;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class SupervisorManager extends Component
 {
+    use WithFileUploads;
     public $fullName;
     public $emailAddress;
     public $phoneNumber;
+    public $resume;
 
     public $editingSupervisorId;
     public $editingFullName;
     public $editingEmailAddress;
     public $editingPhoneNumber;
+    public $editingResume;
 
     public $supervisors;
 
@@ -30,6 +34,7 @@ class SupervisorManager extends Component
             'fullName' => 'required|string|max:255',
             'emailAddress' => 'required|email|unique:supervisors,email_address',
             'phoneNumber' => 'nullable|string|max:20',
+            'resume' => 'nullable|file|mimes:pdf,doc,docx|max:10240',
         ]);
 
         // Create a new supervisor (assuming you have a Supervisor model)
@@ -37,13 +42,16 @@ class SupervisorManager extends Component
             'fullname' => $this->fullName,
             'email_address' => $this->emailAddress,
             'phone_number' => $this->phoneNumber,
+            'resume' => $this->resume ? $this->resume->store('resumes', 'public') : null,
         ]);
 
         // Reset form fields
         $this->reset([
             'fullName',
             'emailAddress',
-            'phoneNumber'
+            'emailAddress',
+            'phoneNumber',
+            'resume',
         ]);
 
         // Optionally, you can emit an event or flash a message
@@ -71,6 +79,7 @@ class SupervisorManager extends Component
             'editingFullName' => 'required|string|max:255',
             'editingEmailAddress' => 'required|email|unique:supervisors,email_address,' . $this->editingSupervisorId,
             'editingPhoneNumber' => 'nullable|string|max:20',
+            'editingResume' => 'nullable|file|mimes:pdf,doc,docx|max:10240',
         ]);
 
         // Update supervisor record
@@ -81,11 +90,19 @@ class SupervisorManager extends Component
             'phone_number' => $this->editingPhoneNumber,
         ]);
 
+        if ($this->editingResume) {
+            $supervisor->update([
+                'resume' => $this->editingResume->store('resumes', 'public'),
+            ]);
+        }
+
         $this->reset([
             'editingSupervisorId',
             'editingFullName',
             'editingEmailAddress',
+            'editingEmailAddress',
             'editingPhoneNumber',
+            'editingResume',
         ]);
 
         $this->dispatch('closeManageSupervisorModal');
