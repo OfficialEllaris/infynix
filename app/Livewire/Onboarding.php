@@ -2,17 +2,14 @@
 
 namespace App\Livewire;
 
+use App\Models\User;
 use Livewire\Component;
 
 class Onboarding extends Component
 {
     public $username;
-    public $username_value;
     public $email_address;
-    public $email_address_value;
     public $password;
-    public $password_value;
-    public $feedback;
 
     protected $rules = [
         'username' => 'required|min:3|max:20',
@@ -28,18 +25,24 @@ class Onboarding extends Component
 
     public function registerUser()
     {
-        sleep(2); // ⏳ Force 2-second loading time
-
         $this->validate();
 
-        $this->feedback = "Account Created Successfully!";
-        $this->username_value = $this->username;
-        $this->email_address_value = $this->email_address;
-        $this->password_value = $this->password;
 
-        $this->username = "";
-        $this->email_address = "";
-        $this->password = "";
+        // Create user record
+        User::create([
+            'username' => $this->username,
+            'email_address' => $this->email_address,
+            'password' => $this->password
+        ]);
+
+        // Reset input fields
+        $this->reset([
+            'username',
+            'email_address',
+            'password'
+        ]);
+
+        session()->flash('feedback', 'Account Created Successfully!');
     }
 
     public function render()
